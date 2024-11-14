@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id = "@+id/relativeLayout1"
+    android:layout_width = "fill_parent"
+    android:layout_height = "wrap_content">
+<!--    android:background = "@color/colorCell" >-->
+
+    <TextView
+        android:id="@+id/SHIPNO"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1.5"
+        android:background="@drawable/cell_shape"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:padding="5dp"
+        android:singleLine="false"
+        android:text="Ship#"
+
+        android:textSize="15dp" />
+
+    <TextView
+        android:id="@+id/DockNo"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.2"
+        android:background="@drawable/cell_shape"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:padding="5dp"
+        android:singleLine="true"
+        android:text="Dock"
+        android:textSize="15dp" />
+
+    <TextView
+        android:id="@+id/ShipToNo"
+        android:layout_width="90dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:background="@drawable/cell_shape"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:padding="5dp"
+        android:singleLine="false"
+        android:text="Ship-To"
+        android:textSize="15dp" />
+
+    <TextView
+        android:id="@+id/TrailerNO"
+        android:layout_width="5dp"
+        android:layout_height="95dp"
+        android:layout_weight="1"
+        android:background="@drawable/cell_shape"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:padding="5dp"
+        android:singleLine="false"
+        android:text="Trailer"
+        android:textSize="15dp" />
+</LinearLayout>
+
+
+
+

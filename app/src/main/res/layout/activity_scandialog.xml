@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="350dp"
+    android:layout_height="600dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="30dp"
+    android:background="#FFFFFF"
+    android:orientation="vertical"
+
+    android:gravity="center">
+
+    <!-- MES Part Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="right|center"
+            android:text="MES Part:"
+            android:textColor="#000000"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/MESPart"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:hint="part#"/>
+    </LinearLayout>
+
+    <!-- QTY Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="right|center"
+            android:text="QTY:"
+            android:textColor="#000000"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/MESQTY"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:hint="QTY"/>
+    </LinearLayout>
+
+    <!-- LOT No Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <TextView
+            android:id="@+id/MESLOTNO"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="right|center"
+            android:text="LOT No:"
+            android:textColor="#000000"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/LOTNO"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:hint="LOT#" />
+    </LinearLayout>
+
+    <!-- SACHRKEY Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <TextView
+            android:id="@+id/SACHRKEYView"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="right|center"
+            android:text="SACHRKEY:"
+            android:textColor="#000000"
+            android:textSize="15sp"/>
+
+        <TextView
+            android:id="@+id/SACHRKEY"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:hint="SACHKEY#" />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/LINE"
+        android:layout_width="300dp"
+        android:layout_height="5dp"
+        android:gravity="center"
+        android:layout_marginStart="-5dp"
+        android:background="#6200EE"
+        android:textSize="18sp"/>
+    <TextView
+        android:id="@+id/rfidResult"
+        android:layout_width="350dp"
+        android:layout_height="30dp"
+        android:gravity="center"
+        android:text="Item:"
+        android:textColor="#000000"
+        android:textSize="18sp"/>
+
+    <!-- Item Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <TextView
+            android:id="@+id/ItemTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="right|center"
+            android:text="Item :"
+            android:textColor="#000000"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/Item"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:hint="Item" />
+    </LinearLayout>
+
+    <!-- Part Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <TextView
+            android:id="@+id/PartTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="right|center"
+            android:text="Part :"
+            android:textColor="#000000"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/Part"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:hint="Part" />
+    </LinearLayout>
+
+    <!-- Model Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <TextView
+            android:id="@+id/ModelTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="right|center"
+            android:text="Model :"
+            android:textColor="#000000"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/Model"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:hint="Model" />
+    </LinearLayout>
+
+    <!-- QTY Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <TextView
+            android:id="@+id/QTYTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="right|center"
+            android:text="QTY :"
+            android:textColor="#000000"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/QTY"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:hint="QTY" />
+    </LinearLayout>
+
+    <!-- PLT Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <TextView
+            android:id="@+id/PLTTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="right|center"
+            android:text="PLT :"
+            android:textColor="#000000"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/PLT"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:hint="PLT" />
+    </LinearLayout>
+
+    <!-- Buttons -->
+    <TextView
+        android:id="@+id/ERRMSG"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:textColor="#FF0000"
+        android:gravity="center"
+        android:textSize="25sp"
+        android:hint="ERRMSG" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp">
+
+        <Button
+            android:background="@drawable/rect_button_background"
+            android:id="@+id/button_read"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="20dp"
+            android:textSize="18sp"
+            android:text="RFID READ" />
+
+        <Button
+            android:background="@drawable/rect_button_background"
+            android:id="@+id/button_close"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginEnd="10dp"
+            android:textSize="18sp"
+            android:text="Close" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -41,6 +42,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -69,6 +72,10 @@ public class LoadScan extends AppCompatActivity {
     private TextView LoadingMSG;
     private String EMPNO;
     private String DockMapValue;
+    private HashMap<String, String> BarcodeList;
+
+
+
 
 
     @Override
@@ -97,6 +104,7 @@ public class LoadScan extends AppCompatActivity {
         EMPNO =  rcvIntent.getStringExtra("EMPNO");
         DockMapValue = rcvIntent.getStringExtra("DockMapValue");
         String Name =  rcvIntent.getStringExtra("Name");
+        BarcodeList = new HashMap<>();
         ShipDetails();
 
 
@@ -110,10 +118,23 @@ public class LoadScan extends AppCompatActivity {
                 if (previousSelectedView != null) {
                     previousSelectedView.setBackgroundColor(Color.TRANSPARENT); // 기본 배경색으로 초기화
                 }
+                CheckBox MESCheckBox = findViewById(R.id.MESCheck);
+                MESCheckBox.setChecked(false);
                 view.setBackgroundColor(Color.LTGRAY); // 선택된 항목 하이라이트
                 previousSelectedView = view;
                 LoadScanModel selectedItem = (LoadScanModel) parent.getItemAtPosition(position);
                 Sachrkey = selectedItem.getSachrkey();
+                String HashValue = BarcodeList.get(Sachrkey);
+                if (HashValue != null){
+                if(HashValue.equals("") || HashValue.isEmpty()){
+                    MESCheckBox.setChecked(false);
+                } else{
+                    MESCheckBox.setChecked(true);
+                }}
+
+
+
+
             }
         });
 
@@ -233,6 +254,8 @@ public class LoadScan extends AppCompatActivity {
         });
     }
 
+
+
     protected void onResume() {
         super.onResume();
         // 화면이 다시 나타나면 ShipDetails()를 호출하여 데이터를 갱신
@@ -262,6 +285,9 @@ public class LoadScan extends AppCompatActivity {
                     chkexists = false;
                 }
                 if (resultSet.next()) {
+                    String SACHR_Hash = resultSet.getString("SACHRKEY");
+                    BarcodeList.put(SACHR_Hash, barcode);
+
                     if (!chkexists) {
                         if(RFIDYN.equals("Y")) {
                             Intent intent = new Intent(LoadScan.this, ScanDialog.class);
@@ -361,6 +387,7 @@ public class LoadScan extends AppCompatActivity {
                     String ManualNumber = String.valueOf(manualNumberInt); // 다시 문자열로 변환
                     String sachrkeyFromResultSet = resultSet.getString("SACHRKEY");
                     results.add(new LoadScanModel(PartNumber, SEQNumber, OrderNumber, ScanNumber, ManualNumber, sachrkeyFromResultSet));
+
                 }
 
                 if (results.isEmpty()) {

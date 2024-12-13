@@ -58,6 +58,7 @@ public class PressMold extends AppCompatActivity {
         button_write = findViewById(R.id.button_write);
         RFIDWrite = findViewById(R.id.RFIDWrite);
         button_read = findViewById(R.id.button_read);
+
         final LoadingDialog loadingDialog = new LoadingDialog(PressMold.this);
         button_read.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,12 +120,35 @@ public class PressMold extends AppCompatActivity {
     }
     public void onClickBtnInit(View v) {
 
-
-
         RFIDRead.setText("");
 
 
     }
+
+    private String asciiToHex(String asciiStr) {
+        StringBuilder hex = new StringBuilder();
+        for (char c : asciiStr.toCharArray()) {
+            hex.append(String.format("%02X", (int) c)); // 각 문자에 대해 16진수 변환
+        }
+        return hex.toString();
+    }
+    private String padHexTo24Digits(String hexStr) {
+        StringBuilder paddedHex = new StringBuilder(hexStr);
+        while (paddedHex.length() < 24) { // 24자리 Hexadecimal이 될 때까지
+            paddedHex.append("20"); // 20을 추가 (ASCII 공백)
+        }
+        return paddedHex.toString();
+    }
+    private byte[] hexStringToByteArray(String hexStr) {
+        int len = hexStr.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(hexStr.charAt(i), 16) << 4)
+                    + Character.digit(hexStr.charAt(i + 1), 16));
+        }
+        return data;
+    }
+
     private void WriteRfid(View v) {
         writeString = RFIDWrite.getText().toString();
 
@@ -154,18 +178,19 @@ public class PressMold extends AppCompatActivity {
                 Toast.makeText(this, "Clear failed: " + clearStatus.toString(), Toast.LENGTH_SHORT).show();
                 return; // 만약 초기화 실패 시 새 데이터 쓰기 작업 중지
             }
-
-            // 2단계: EPC 메모리에 새 데이터 쓰기
-            writeParams.data = writeString.getBytes(StandardCharsets.US_ASCII); // ASCII 데이터로 변환
+            String hexString = (asciiToHex(writeString));
+            byte[] hexData = hexStringToByteArray(hexString);
+            writeParams.data = hexData;
             Status writeStatus = mRFIDReader.writeTag(filter, writeParams);
-
             if (writeStatus == Status.STATUS_OK) {
                 mNotification.startBuzzer(16, 100, 0, 1);
-                Toast.makeText(this, "Success write", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Success write: " + hexString, Toast.LENGTH_SHORT).show();
             } else {
                 mNotification.startBuzzer(1, 100, 100, 2);
                 Toast.makeText(this, "Write failed: " + writeStatus.toString(), Toast.LENGTH_SHORT).show();
             }
+
+
         } catch (RuntimeException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         } finally {
@@ -185,8 +210,8 @@ public class PressMold extends AppCompatActivity {
 
             // EPC 메모리 뱅크 설정 및 오프셋 설정
             readParams.memoryBank = MemoryBank.EPC;
-            readParams.offset = 0; // EPC 메모리의 데이터 부분부터 시작
-            readParams.size = 36;  // 읽기 크기 설정 (필요 시 조정)
+            readParams.offset = 2; // EPC 메모리의 데이터 부분부터 시작
+            readParams.size = 6;  // 읽기 크기 설정 (필요 시 조정)
             readParams.accessPassword = "00000000";
             readParams.timeout = 5000;
 
@@ -195,13 +220,15 @@ public class PressMold extends AppCompatActivity {
 
             if (readResult.getStatus() == Status.STATUS_OK) {
                 byte[] bankData = readResult.getBankData();
-                String asciiString = new String(bankData, StandardCharsets.US_ASCII); // ASCII로 변환하여 읽기
+                String asciiData = new String(bankData, StandardCharsets.US_ASCII);
 
-                RFIDRead.setText(asciiString);
-
+                RFIDRead.setText(asciiData);
+                Toast.makeText(this, asciiData, Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "RFID 읽기 성공!", Toast.LENGTH_SHORT).show();
                 mNotification.startBuzzer(16, 100, 0, 1);
             } else {
-                RFIDRead.setText(readResult.getStatus().toString());
+                RFIDRead.setText("");
+                Toast.makeText(this, "RFID 읽기 실패: " + readResult.getStatus(), Toast.LENGTH_SHORT).show();
                 mNotification.startBuzzer(1, 100, 100, 2);
             }
         } catch (RuntimeException e) {

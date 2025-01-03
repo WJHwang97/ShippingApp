@@ -123,10 +123,12 @@ public class LoadScan extends AppCompatActivity {
                 view.setBackgroundColor(Color.LTGRAY); // 선택된 항목 하이라이트
                 previousSelectedView = view;
                 LoadScanModel selectedItem = (LoadScanModel) parent.getItemAtPosition(position);
-                Sachrkey = selectedItem.getSachrkey();
-                String HashValue = BarcodeList.get(Sachrkey);
+                String SEQNO = selectedItem.getSEQNo();
+                Toast.makeText(getApplicationContext(), SEQNO, Toast.LENGTH_LONG).show();
+
+                String HashValue = BarcodeList.get(SEQNO);
                 if (HashValue != null){
-                if(HashValue.equals("") || HashValue.isEmpty()){
+                if(HashValue.isEmpty()){
                     MESCheckBox.setChecked(false);
                 } else{
                     MESCheckBox.setChecked(true);
@@ -285,9 +287,6 @@ public class LoadScan extends AppCompatActivity {
                     chkexists = false;
                 }
                 if (resultSet.next()) {
-                    String SACHR_Hash = resultSet.getString("SACHRKEY");
-                    BarcodeList.put(SACHR_Hash, barcode);
-
                     if (!chkexists) {
                         if(RFIDYN.equals("Y")) {
                             Intent intent = new Intent(LoadScan.this, ScanDialog.class);
@@ -387,7 +386,8 @@ public class LoadScan extends AppCompatActivity {
                     String ManualNumber = String.valueOf(manualNumberInt); // 다시 문자열로 변환
                     String sachrkeyFromResultSet = resultSet.getString("SACHRKEY");
                     results.add(new LoadScanModel(PartNumber, SEQNumber, OrderNumber, ScanNumber, ManualNumber, sachrkeyFromResultSet));
-
+                    String SEQ_Hash = resultSet.getString("POSNR");
+                    BarcodeList.put(SEQ_Hash, "");
                 }
 
                 if (results.isEmpty()) {

@@ -329,7 +329,7 @@ public class ReadrfidActivity extends AppCompatActivity  {
                             Part = Part + "(71560-TD000)";
                             break;
                         case "5202":
-                            Part = Part + "(67110-TDO060)";
+                            Part = Part + "(67110-TD060)";
                             break;
                         case "7202":
                             Part = Part + "(72801-TD000)";

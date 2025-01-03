@@ -258,7 +258,7 @@ public class ListViewActivity extends AppCompatActivity {
             item11 = new Model("EXTN RH", "P", "71560-TD000", "4241");
             productList.add(item11);
 
-            item12 = new Model("ROOF", "Q", "67110-TDO060", "5202");
+            item12 = new Model("ROOF", "Q", "67110-TD060", "5202");
             productList.add(item12);
 
             item13 = new Model("T/GATE", "R", "72801-TD000", "7202");

@@ -336,9 +336,9 @@ public class ScanDialog extends Activity {
                             PartResult = PartResult + "(71560-TD000)";
                             break;
                         case "5202":
-                            PartResult = PartResult + "(67110-GO060)";
+                            PartResult = PartResult + "(67110-TD060)";
                             break;
-                        case "7201":
+                        case "7202":
                             PartResult = PartResult + "(72801-TD000)";
                             break;
                         case "7251":

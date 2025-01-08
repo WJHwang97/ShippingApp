@@ -44,6 +44,7 @@ public class ScanDialog extends Activity {
     Connection con;
     private Button button_read;
     private Button button_close;
+    private Button button_write;
     private RFIDReader mRFIDReader;
     private Notification mNotification;
     private TextView rfidResult;
@@ -69,6 +70,7 @@ public class ScanDialog extends Activity {
     private TextView ERRMSG;
     private TextView MESLOTTEXTVIEW;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +79,7 @@ public class ScanDialog extends Activity {
         con = sqlConnectionClass.CONN();
         button_read = findViewById(R.id.button_read);
         button_close = findViewById(R.id.button_close);
+        button_write = findViewById(R.id.button_write);
         Item = findViewById(R.id.Item);
         Part = findViewById(R.id.Part);
         Model = findViewById(R.id.Model);
@@ -91,6 +94,7 @@ public class ScanDialog extends Activity {
         QTY.setText("");
         PLTBox.setText("");
         rfidResult.setText("");
+        button_write.setEnabled(false);
         button_read.setOnClickListener(v -> RFID_Read());
         Intent rcvIntent = getIntent();
         QTYValue = rcvIntent.getStringExtra("QTYValue");
@@ -116,6 +120,14 @@ public class ScanDialog extends Activity {
                 finish();  // 현재 액티비티 종료하고 이전 액티비티로 돌아감
             }
         });
+        button_write.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                Intent write_intent = new Intent(ScanDialog.this, WriterfidActivity.class);
+                startActivity(write_intent);
+            }
+        });
+
 
     }
 
@@ -398,7 +410,7 @@ public class ScanDialog extends Activity {
                     }
                     else{
                         ERRMSG.setText(resultSet.getString("ERRMSG"));
-
+                        button_write.setEnabled(true);
                     }
                 }
 

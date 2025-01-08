@@ -67,9 +67,9 @@ public class MainActivity extends AppCompatActivity {
         gridViewModelArrayList = new ArrayList<GridViewModel>();
         gridViewModelArrayList.add(new GridViewModel("Write RFID", R.drawable.menu ));
         gridViewModelArrayList.add(new GridViewModel("Read RFID", R.drawable.menu ));
-        //gridViewModelArrayList.add(new GridViewModel("Sales Loading Scan", R.drawable.menu ));
-        //gridViewModelArrayList.add(new GridViewModel("Change QTY", R.drawable.menu ));
-        //gridViewModelArrayList.add(new GridViewModel("Mold Read", R.drawable.menu ));
+        gridViewModelArrayList.add(new GridViewModel("Sales Loading Scan", R.drawable.menu ));
+        gridViewModelArrayList.add(new GridViewModel("Change QTY", R.drawable.menu ));
+        gridViewModelArrayList.add(new GridViewModel("Mold Read", R.drawable.menu ));
 //        gridViewModelArrayList.add(new GridViewModel("LOTTE", R.drawable.menu ));
 //        gridViewModelArrayList.add(new GridViewModel("CINEMA", R.drawable.menu ));
 //        gridViewModelArrayList.add(new GridViewModel("LOTTE1", R.drawable.menu ));

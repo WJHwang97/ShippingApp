@@ -9,7 +9,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -42,8 +41,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 
@@ -72,10 +69,6 @@ public class LoadScan extends AppCompatActivity {
     private TextView LoadingMSG;
     private String EMPNO;
     private String DockMapValue;
-    private HashMap<String, String> BarcodeList;
-
-
-
 
 
     @Override
@@ -104,7 +97,6 @@ public class LoadScan extends AppCompatActivity {
         EMPNO =  rcvIntent.getStringExtra("EMPNO");
         DockMapValue = rcvIntent.getStringExtra("DockMapValue");
         String Name =  rcvIntent.getStringExtra("Name");
-        BarcodeList = new HashMap<>();
         ShipDetails();
 
 
@@ -118,25 +110,10 @@ public class LoadScan extends AppCompatActivity {
                 if (previousSelectedView != null) {
                     previousSelectedView.setBackgroundColor(Color.TRANSPARENT); // 기본 배경색으로 초기화
                 }
-                CheckBox MESCheckBox = findViewById(R.id.MESCheck);
-                MESCheckBox.setChecked(false);
                 view.setBackgroundColor(Color.LTGRAY); // 선택된 항목 하이라이트
                 previousSelectedView = view;
                 LoadScanModel selectedItem = (LoadScanModel) parent.getItemAtPosition(position);
-                String SEQNO = selectedItem.getSEQNo();
-                Toast.makeText(getApplicationContext(), SEQNO, Toast.LENGTH_LONG).show();
-
-                String HashValue = BarcodeList.get(SEQNO);
-                if (HashValue != null){
-                if(HashValue.isEmpty()){
-                    MESCheckBox.setChecked(false);
-                } else{
-                    MESCheckBox.setChecked(true);
-                }}
-
-
-
-
+                Sachrkey = selectedItem.getSachrkey();
             }
         });
 
@@ -215,7 +192,7 @@ public class LoadScan extends AppCompatActivity {
                     if(barcode.substring(0,1).equals("R"))
                     {
                         if(RFIDYN.equals("Y")){
-                        SearchLot();
+                            SearchLot();
                         } else{
                             Mobis_SearchLot();
                         }
@@ -256,61 +233,59 @@ public class LoadScan extends AppCompatActivity {
         });
     }
 
-
-
     protected void onResume() {
         super.onResume();
         // 화면이 다시 나타나면 ShipDetails()를 호출하여 데이터를 갱신
         ShipDetails();
     }
-        private void SearchLot() {
-            try {
-                // 데이터베이스 연결 및 CallableStatement 준비
-                CallableStatement callableStatement = con.prepareCall("{call sp_PdaA010FrmB_SARE_POP1(@WORKGB = ?, @FACTGB = ?, @LOTNO = ?, @RFIDYN = ?, @TKNUM = ?, @RTNYN = ?, @vcTRANGB = ?, @FUSER = ?, @FFORM = ?)}");
-                // 프로시저 파라미터 설정 및 실행 로직...
-                callableStatement.setString(1, "SEARCH_LOT");
-                callableStatement.setString(2, "6100");
-                callableStatement.setString(3, barcode);
-                callableStatement.setString(4, RFIDYN);
-                callableStatement.setString(5, OrderNo);
-                callableStatement.setString(6, "Y");
-                callableStatement.setString(7, "");
-                callableStatement.setString(8, EMPNO);
-                callableStatement.setString(9, "");
-                ResultSet resultSet = callableStatement.executeQuery();
+    private void SearchLot() {
+        try {
+            // 데이터베이스 연결 및 CallableStatement 준비
+            CallableStatement callableStatement = con.prepareCall("{call sp_PdaA010FrmB_SARE_POP1(@WORKGB = ?, @FACTGB = ?, @LOTNO = ?, @RFIDYN = ?, @TKNUM = ?, @RTNYN = ?, @vcTRANGB = ?, @FUSER = ?, @FFORM = ?)}");
+            // 프로시저 파라미터 설정 및 실행 로직...
+            callableStatement.setString(1, "SEARCH_LOT");
+            callableStatement.setString(2, "6100");
+            callableStatement.setString(3, barcode);
+            callableStatement.setString(4, RFIDYN);
+            callableStatement.setString(5, OrderNo);
+            callableStatement.setString(6, "Y");
+            callableStatement.setString(7, "");
+            callableStatement.setString(8, EMPNO);
+            callableStatement.setString(9, "");
+            ResultSet resultSet = callableStatement.executeQuery();
 
-                if (isThere(resultSet, "CHK")) {
-                    chkexists = true;
-                }
-                else
-                {
-                    chkexists = false;
-                }
-                if (resultSet.next()) {
-                    if (!chkexists) {
-                        if(RFIDYN.equals("Y")) {
-                            Intent intent = new Intent(LoadScan.this, ScanDialog.class);
-                            intent.putExtra("QTYValue", resultSet.getString("QTY"));
-                            intent.putExtra("SABUNValue", resultSet.getString("SABUN"));
-                            intent.putExtra("SACHRKEYValue", resultSet.getString("SACHRKEY"));
-                            intent.putExtra("MESLOTValue", resultSet.getString("MESLOT"));
-                            intent.putExtra("TKNUM", ShippingNo.getText().toString());
-                            intent.putExtra("RFIDYN", RFIDYN);
-                            startActivity(intent);
-                            vendorBox.setText("");  // 입력 필드 초기화
-                        }} else {
-                        Toast.makeText(LoadScan.this, resultSet.getString("ERRMSG"), Toast.LENGTH_LONG).show();
-                        vendorBox.setText("");  // 오류 발생 시 필드 초기화
-                    }
-                }
-                resultSet.close();
-                callableStatement.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                vendorBox.setText("");  // 예외 발생 시 필드 초기화
+            if (isThere(resultSet, "CHK")) {
+                chkexists = true;
             }
-
+            else
+            {
+                chkexists = false;
+            }
+            if (resultSet.next()) {
+                if (!chkexists) {
+                    if(RFIDYN.equals("Y")) {
+                        Intent intent = new Intent(LoadScan.this, ScanDialog.class);
+                        intent.putExtra("QTYValue", resultSet.getString("QTY"));
+                        intent.putExtra("SABUNValue", resultSet.getString("SABUN"));
+                        intent.putExtra("SACHRKEYValue", resultSet.getString("SACHRKEY"));
+                        intent.putExtra("MESLOTValue", resultSet.getString("MESLOT"));
+                        intent.putExtra("TKNUM", ShippingNo.getText().toString());
+                        intent.putExtra("RFIDYN", RFIDYN);
+                        startActivity(intent);
+                        vendorBox.setText("");  // 입력 필드 초기화
+                    }} else {
+                    Toast.makeText(LoadScan.this, resultSet.getString("ERRMSG"), Toast.LENGTH_LONG).show();
+                    vendorBox.setText("");  // 오류 발생 시 필드 초기화
+                }
+            }
+            resultSet.close();
+            callableStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            vendorBox.setText("");  // 예외 발생 시 필드 초기화
         }
+
+    }
 
     private void Mobis_SearchLot() {
         try {
@@ -353,214 +328,212 @@ public class LoadScan extends AppCompatActivity {
     }
 
 
-        private void ShipDetails() {
+    private void ShipDetails() {
 
-            CallableStatement callableStatement = null;
-            ResultSet resultSet = null;
+        CallableStatement callableStatement = null;
+        ResultSet resultSet = null;
 
-            try {
-                callableStatement = con.prepareCall("{call sp_PdaA010FrmB_SARE_POP1(@WORKGB=?, @TKNUM=?, @DOCKNO=?, @RTNYN=?, @FUSER =?, @vcTRANGB=?)}");
-                callableStatement.setString(1, "SEARCH");
-                callableStatement.setString(2, OrderNo);
-                callableStatement.setString(3, DockMapValue);
-                callableStatement.setString(4, "Y");
-                callableStatement.setString(5, EMPNO);
-                callableStatement.setString(6, "1");
+        try {
+            callableStatement = con.prepareCall("{call sp_PdaA010FrmB_SARE_POP1(@WORKGB=?, @TKNUM=?, @DOCKNO=?, @RTNYN=?, @FUSER =?, @vcTRANGB=?)}");
+            callableStatement.setString(1, "SEARCH");
+            callableStatement.setString(2, OrderNo);
+            callableStatement.setString(3, DockMapValue);
+            callableStatement.setString(4, "Y");
+            callableStatement.setString(5, EMPNO);
+            callableStatement.setString(6, "1");
 
-                // 첫 번째 ResultSet 처리
+            // 첫 번째 ResultSet 처리
 
-                resultSet = callableStatement.executeQuery();
-                int resultSetCount = 1;  // 첫 번째 ResultSet이 있으므로 1부터 시작
-                ArrayList<LoadScanModel> results = new ArrayList<>();
-                LoadScanAdapter adapter = new LoadScanAdapter(LoadScan.this, results);
-                list.setAdapter(adapter);
+            resultSet = callableStatement.executeQuery();
+            int resultSetCount = 1;  // 첫 번째 ResultSet이 있으므로 1부터 시작
+            ArrayList<LoadScanModel> results = new ArrayList<>();
+            LoadScanAdapter adapter = new LoadScanAdapter(LoadScan.this, results);
+            list.setAdapter(adapter);
 
-                while (resultSet.next()) {
-                    String PartNumber = resultSet.getString("SABUN");
-                    String SEQNumber = resultSet.getString("POSNR");
-                    int orderNumberInt = (int) Double.parseDouble(resultSet.getString("NQTY")); // NQTY 소수점 제거
-                    String OrderNumber = String.valueOf(orderNumberInt); // 다시 문자열로 변환
-                    int scanNumberInt = (int) Double.parseDouble(resultSet.getString("CHULQTY")); // CHULQTY 소수점 제거
-                    String ScanNumber = String.valueOf(scanNumberInt); // 다시 문자열로 변환
-                    int manualNumberInt = (int) Double.parseDouble(resultSet.getString("CHULQTY1")); // CHULQTY1 소수점 제거
-                    String ManualNumber = String.valueOf(manualNumberInt); // 다시 문자열로 변환
-                    String sachrkeyFromResultSet = resultSet.getString("SACHRKEY");
-                    results.add(new LoadScanModel(PartNumber, SEQNumber, OrderNumber, ScanNumber, ManualNumber, sachrkeyFromResultSet));
-                    String SEQ_Hash = resultSet.getString("POSNR");
-                    BarcodeList.put(SEQ_Hash, "");
-                }
-
-                if (results.isEmpty()) {
-                    Toast.makeText(LoadScan.this, "No results found.", Toast.LENGTH_SHORT).show();
-                }
-
-                // 추가적인 ResultSet 처리
-                boolean resultsAvailable = callableStatement.getMoreResults();
-                //ResultSet lastResultSet = null;  // 마지막 ResultSet을 저장할 변수
-
-                while (resultsAvailable) {
-                    ResultSet currentResultSet = callableStatement.getResultSet();
-
-                     // 결과 세트가 있을 때마다 카운트 증가
-                    resultSetCount++;
-
-                    if (resultSetCount == 2 && currentResultSet != null) {
-                        // 두 번째 ResultSet 처리 (EDIYN 관련)
-                        if (currentResultSet.next()) {
-                            RFIDYN = currentResultSet.getString("RFIDYN");
-                            //Toast.makeText(LoadScan.this, "Selected EDI" + EDIYN, Toast.LENGTH_LONG).show();
-                            CheckBox MESCheckBox = findViewById(R.id.MESCheck);
-                            CheckBox RFIDCheckBox = findViewById(R.id.RFIDCheck);
-                            if (RFIDYN.equals("N")) {
-                                MESCheckBox.setVisibility(View.GONE);
-                                RFIDCheckBox.setVisibility(View.GONE);
-                            }
-                        }
-                    }
-                    else if (resultSetCount == 3 && currentResultSet != null) {
-                        // 세 번째 ResultSet 처리 (ManualYN 관련)
-                        if (currentResultSet.next()) {
-                            ManualYN = currentResultSet.getString("MANUALYN");
-                            //Toast.makeText(LoadScan.this, "Selected MANUAL" + ManualYN, Toast.LENGTH_LONG).show();
-                            Button ManualButton = findViewById(R.id.Manualbutton);
-                            if (ManualYN.equals("N")) {
-                                ManualButton.setVisibility(View.GONE);
-                            }
-                        }
-                    }
-                    // 현재의 마지막 ResultSet을 lastResultSet으로 저장
-                    ResultSet lastResultSet = currentResultSet;
-                    resultsAvailable = callableStatement.getMoreResults(Statement.KEEP_CURRENT_RESULT);
-                    if (!resultsAvailable) {
-
-                        if (lastResultSet != null) {
-                            // 마지막 ResultSet에 데이터가 있는지 체크
-                            if (lastResultSet.next()) {
-                                CANCELYN = Objects.toString(lastResultSet.getString("CANCELYN"), "N");
-                                //Toast.makeText(LoadScan.this, "Selected CAMNELYN    " + CANCELYN, Toast.LENGTH_LONG).show();
-                                if (CANCELYN.equals("Y")) {
-                                    Sachrkey = "";
-                                    vendorBox.setText("");
-                                    CheckBox MesCheck = findViewById(R.id.MESCheck);
-                                    CheckBox RFIDCheck = findViewById(R.id.RFIDCheck);
-                                    MesCheck.setChecked(false);
-                                    RFIDCheck.setChecked(false);
-                                    TextView Vendor = findViewById(R.id.Vendor);
-                                    Vendor.setText("");
-                                    Toast.makeText(LoadScan.this, "Selected shipping doc. has been cancelled", Toast.LENGTH_LONG).show();
-                                    ShipDetails();  // 다시 로드
-                            }
-                            }
-                        }
-                    }
-
-                }
-
-                // 마지막 ResultSet 처리 (CANCELYN 값 가져오기)
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-                Toast.makeText(LoadScan.this, "SQL Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(LoadScan.this, "General Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            }
-            finally
-            {
-                try {
-                    callableStatement.close();
-                    resultSet.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
+            while (resultSet.next()) {
+                String PartNumber = resultSet.getString("SABUN");
+                String SEQNumber = resultSet.getString("POSNR");
+                int orderNumberInt = (int) Double.parseDouble(resultSet.getString("NQTY")); // NQTY 소수점 제거
+                String OrderNumber = String.valueOf(orderNumberInt); // 다시 문자열로 변환
+                int scanNumberInt = (int) Double.parseDouble(resultSet.getString("CHULQTY")); // CHULQTY 소수점 제거
+                String ScanNumber = String.valueOf(scanNumberInt); // 다시 문자열로 변환
+                int manualNumberInt = (int) Double.parseDouble(resultSet.getString("CHULQTY1")); // CHULQTY1 소수점 제거
+                String ManualNumber = String.valueOf(manualNumberInt); // 다시 문자열로 변환
+                String sachrkeyFromResultSet = resultSet.getString("SACHRKEY");
+                results.add(new LoadScanModel(PartNumber, SEQNumber, OrderNumber, ScanNumber, ManualNumber, sachrkeyFromResultSet));
             }
 
+            if (results.isEmpty()) {
+                Toast.makeText(LoadScan.this, "No results found.", Toast.LENGTH_SHORT).show();
+            }
+
+            // 추가적인 ResultSet 처리
+            boolean resultsAvailable = callableStatement.getMoreResults();
+            //ResultSet lastResultSet = null;  // 마지막 ResultSet을 저장할 변수
+
+            while (resultsAvailable) {
+                ResultSet currentResultSet = callableStatement.getResultSet();
+
+                // 결과 세트가 있을 때마다 카운트 증가
+                resultSetCount++;
+
+                if (resultSetCount == 2 && currentResultSet != null) {
+                    // 두 번째 ResultSet 처리 (EDIYN 관련)
+                    if (currentResultSet.next()) {
+                        RFIDYN = currentResultSet.getString("RFIDYN");
+                        //Toast.makeText(LoadScan.this, "Selected EDI" + EDIYN, Toast.LENGTH_LONG).show();
+                        CheckBox MESCheckBox = findViewById(R.id.MESCheck);
+                        CheckBox RFIDCheckBox = findViewById(R.id.RFIDCheck);
+                        if (RFIDYN.equals("N")) {
+                            MESCheckBox.setVisibility(View.GONE);
+                            RFIDCheckBox.setVisibility(View.GONE);
+                        }
+                    }
+                }
+                else if (resultSetCount == 3 && currentResultSet != null) {
+                    // 세 번째 ResultSet 처리 (ManualYN 관련)
+                    if (currentResultSet.next()) {
+                        ManualYN = currentResultSet.getString("MANUALYN");
+                        //Toast.makeText(LoadScan.this, "Selected MANUAL" + ManualYN, Toast.LENGTH_LONG).show();
+                        Button ManualButton = findViewById(R.id.Manualbutton);
+                        if (ManualYN.equals("N")) {
+                            ManualButton.setVisibility(View.GONE);
+                        }
+                    }
+                }
+                // 현재의 마지막 ResultSet을 lastResultSet으로 저장
+                ResultSet lastResultSet = currentResultSet;
+                resultsAvailable = callableStatement.getMoreResults(Statement.KEEP_CURRENT_RESULT);
+                if (!resultsAvailable) {
+
+                    if (lastResultSet != null) {
+                        // 마지막 ResultSet에 데이터가 있는지 체크
+                        if (lastResultSet.next()) {
+                            CANCELYN = Objects.toString(lastResultSet.getString("CANCELYN"), "N");
+                            //Toast.makeText(LoadScan.this, "Selected CAMNELYN    " + CANCELYN, Toast.LENGTH_LONG).show();
+                            if (CANCELYN.equals("Y")) {
+                                Sachrkey = "";
+                                vendorBox.setText("");
+                                CheckBox MesCheck = findViewById(R.id.MESCheck);
+                                CheckBox RFIDCheck = findViewById(R.id.RFIDCheck);
+                                MesCheck.setChecked(false);
+                                RFIDCheck.setChecked(false);
+                                TextView Vendor = findViewById(R.id.Vendor);
+                                Vendor.setText("");
+                                Toast.makeText(LoadScan.this, "Selected shipping doc. has been cancelled", Toast.LENGTH_LONG).show();
+                                ShipDetails();  // 다시 로드
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            // 마지막 ResultSet 처리 (CANCELYN 값 가져오기)
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Toast.makeText(LoadScan.this, "SQL Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(LoadScan.this, "General Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
-        public void ManualButton()
+        finally
         {
-            if (Sachrkey.isEmpty()) {
-                Toast.makeText(LoadScan.this, "Tap for manual item", Toast.LENGTH_LONG).show();
-            }
             try {
-                CallableStatement callableStatement = con.prepareCall("{call sp_PdaA010FrmB_SARE_POP1(@WORKGB = ?, @FACTGB=?, @SACHRKEY=?, @TKNUM=?, @RTNYN=?, @vcTRANGB=?, @FUSER=?, @FFORM =?)}");
-                callableStatement.setString(1, "INSERT_M");
-                callableStatement.setString(2, "");
-                callableStatement.setString(3, Sachrkey);
-                callableStatement.setString(4, OrderNo);
-                callableStatement.setString(5, "Y");
-                callableStatement.setString(6, "0");
-                callableStatement.setString(7, EMPNO);
-                callableStatement.setString(8, "");
-                ResultSet resultSet = callableStatement.executeQuery();
-
-                if(resultSet.next()){
-                    String chkValue = resultSet.getString("CHK");
-                    String errmsg =resultSet.getString("ERRMSG");
-                    if(chkValue.equals("X")){
-                        Toast.makeText(LoadScan.this, errmsg, Toast.LENGTH_LONG).show();
-                        ShipDetails();
-                    }else if(chkValue.equals("O")){
-                        //Toast.makeText(LoadScan.this, errmsg, Toast.LENGTH_LONG).show();
-                        ShipDetails();
-                    }
-                }
-                resultSet.close();
                 callableStatement.close();
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-                vendorBox.setText("");
-                Sachrkey = "";
-                ShipDetails();
-            }
-            }
-
-
-        private void Confirm_Button(){
-            try {
-                con.setAutoCommit(false);
-                CallableStatement callableStatement = con.prepareCall("{call sp_PdaA010FrmB_SARE_POP1(@WORKGB=?, @FACTGB=?, @TKNUM=?, @RTNYN=?, @vcTRANGB=?, @FUSER=?, @FFORM=?)}");
-                callableStatement.setString(1, "SAVE_CONFYN");
-                callableStatement.setString(2, "6100");
-                callableStatement.setString(3, OrderNo);
-                callableStatement.setString(4, "Y");
-                callableStatement.setString(5, "0");
-                callableStatement.setString(6, EMPNO);
-                callableStatement.setString(7, "");
-                ResultSet resultSet = callableStatement.executeQuery();
-
-                if (resultSet.next()) {
-                    String chkValue = resultSet.getString("CHK");
-                    String errmsg = resultSet.getString("ERRMSG");
-
-
-                    if (chkValue.equals("X")) {
-                        LoadingMSG.setText(errmsg);
-                        //Toast.makeText(LoadScan.this, errmsg, Toast.LENGTH_LONG).show();
-                        // X인 경우, 화면 갱신
-                        con.commit();
-                        Intent resultIntent = new Intent();
-                        resultIntent.putExtra("triggerSearch", true);
-                        setResult(RESULT_OK, resultIntent);
-                        ShipDetails();
-                    } else if (chkValue.equals("O")) {
-                        // O인 경우, 대화상자 띄우고 종료
-                        showDeleteConfirmationDialog();
-
-                        return;  // 바로 리턴하여 아래 ShipDetails()가 실행되지 않도록 함
-                    }
-                    // ShipDetails()를 여기에서 호출하지 않음
-                }
                 resultSet.close();
-                callableStatement.close();
-
             } catch (SQLException e) {
-                e.printStackTrace();
-                vendorBox.setText("");
-                Sachrkey = "";
-                ShipDetails();
+                throw new RuntimeException(e);
             }
         }
+
+    }
+    public void ManualButton()
+    {
+        if (Sachrkey.isEmpty()) {
+            Toast.makeText(LoadScan.this, "Tap for manual item", Toast.LENGTH_LONG).show();
+        }
+        try {
+            CallableStatement callableStatement = con.prepareCall("{call sp_PdaA010FrmB_SARE_POP1(@WORKGB = ?, @FACTGB=?, @SACHRKEY=?, @TKNUM=?, @RTNYN=?, @vcTRANGB=?, @FUSER=?, @FFORM =?)}");
+            callableStatement.setString(1, "INSERT_M");
+            callableStatement.setString(2, "");
+            callableStatement.setString(3, Sachrkey);
+            callableStatement.setString(4, OrderNo);
+            callableStatement.setString(5, "Y");
+            callableStatement.setString(6, "0");
+            callableStatement.setString(7, EMPNO);
+            callableStatement.setString(8, "");
+            ResultSet resultSet = callableStatement.executeQuery();
+
+            if(resultSet.next()){
+                String chkValue = resultSet.getString("CHK");
+                String errmsg =resultSet.getString("ERRMSG");
+                if(chkValue.equals("X")){
+                    Toast.makeText(LoadScan.this, errmsg, Toast.LENGTH_LONG).show();
+                    ShipDetails();
+                }else if(chkValue.equals("O")){
+                    //Toast.makeText(LoadScan.this, errmsg, Toast.LENGTH_LONG).show();
+                    ShipDetails();
+                }
+            }
+            resultSet.close();
+            callableStatement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            vendorBox.setText("");
+            Sachrkey = "";
+            ShipDetails();
+        }
+    }
+
+
+    private void Confirm_Button(){
+        try {
+            con.setAutoCommit(false);
+            CallableStatement callableStatement = con.prepareCall("{call sp_PdaA010FrmB_SARE_POP1(@WORKGB=?, @FACTGB=?, @TKNUM=?, @RTNYN=?, @vcTRANGB=?, @FUSER=?, @FFORM=?)}");
+            callableStatement.setString(1, "SAVE_CONFYN");
+            callableStatement.setString(2, "6100");
+            callableStatement.setString(3, OrderNo);
+            callableStatement.setString(4, "Y");
+            callableStatement.setString(5, "0");
+            callableStatement.setString(6, EMPNO);
+            callableStatement.setString(7, "");
+            ResultSet resultSet = callableStatement.executeQuery();
+
+            if (resultSet.next()) {
+                String chkValue = resultSet.getString("CHK");
+                String errmsg = resultSet.getString("ERRMSG");
+
+
+                if (chkValue.equals("X")) {
+                    LoadingMSG.setText(errmsg);
+                    //Toast.makeText(LoadScan.this, errmsg, Toast.LENGTH_LONG).show();
+                    // X인 경우, 화면 갱신
+                    con.commit();
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("triggerSearch", true);
+                    setResult(RESULT_OK, resultIntent);
+                    ShipDetails();
+                } else if (chkValue.equals("O")) {
+                    // O인 경우, 대화상자 띄우고 종료
+                    showDeleteConfirmationDialog();
+
+                    return;  // 바로 리턴하여 아래 ShipDetails()가 실행되지 않도록 함
+                }
+                // ShipDetails()를 여기에서 호출하지 않음
+            }
+            resultSet.close();
+            callableStatement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            vendorBox.setText("");
+            Sachrkey = "";
+            ShipDetails();
+        }
+    }
 
     private void showDeleteConfirmationDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -608,9 +581,4 @@ public class LoadScan extends AppCompatActivity {
 
         return false;
     }
-    }
-
-
-
-
-
+}

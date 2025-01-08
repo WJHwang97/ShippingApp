@@ -25,8 +25,6 @@ public class LoadScanModel {
         return Sachrkey;
     }
 
-
-
     public String getPartNo() {
         return PartNo;
     }

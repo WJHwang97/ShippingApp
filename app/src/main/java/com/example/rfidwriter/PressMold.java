@@ -132,6 +132,13 @@ public class PressMold extends AppCompatActivity {
         }
         return hex.toString();
     }
+    private String padHexTo24Digits(String hexStr) {
+        StringBuilder paddedHex = new StringBuilder(hexStr);
+        while (paddedHex.length() < 24) { // 24자리 Hexadecimal이 될 때까지
+            paddedHex.append("20"); // 20을 추가 (ASCII 공백)
+        }
+        return paddedHex.toString();
+    }
     private byte[] hexStringToByteArray(String hexStr) {
         int len = hexStr.length();
         byte[] data = new byte[len / 2];
@@ -145,56 +152,47 @@ public class PressMold extends AppCompatActivity {
     private void WriteRfid(View v) {
         writeString = RFIDWrite.getText().toString();
 
-        if (writeString.isEmpty()) {
-            Toast.makeText(this, "Please enter data to write.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         mRFIDReader = RFIDReader.createRFIDReader(this);
         mNotification = Notification.createNotification(this);
 
         try {
-            Filter filter = null; // 필터가 필요 없다면 null로 설정
+            Filter filter = null;
             WriteParams writeParams = new WriteParams();
 
-            // Step 1: EPC 메모리를 빈 값으로 덮어 기존 데이터 삭제
-            writeParams.memoryBank = MemoryBank.EPC; // EPC 메모리 설정
-            writeParams.offset = 2; // EPC 데이터 시작 부분 (워드 단위)
+            // 1단계: EPC 메모리를 빈 값으로 덮어 기존 데이터 삭제
+            writeParams.memoryBank = MemoryBank.EPC;
+            writeParams.offset = 2; // EPC 데이터 부분부터 시작
+
+            // 빈 데이터 생성 (EPC 메모리 크기에 맞춰 조정, 예: 16 바이트)
+            byte[] emptyData = new byte[16]; // 모든 값을 0으로 초기화된 빈 바이트 배열
+            writeParams.data = emptyData;
             writeParams.accessPassword = "00000000";
             writeParams.timeout = 5000;
 
-            // 빈 데이터 생성 (EPC 메모리 크기에 맞게 조정, 예: 16 바이트)
-            byte[] emptyData = new byte[12]; // EPC 메모리 초기화 (0으로 채움)
-            writeParams.data = emptyData;
-
-            // EPC 메모리 초기화 (덮어쓰기)
+            // 빈 데이터로 덮어쓰기
             Status clearStatus = mRFIDReader.writeTag(filter, writeParams);
 
             if (clearStatus == Status.STATUS_OK) {
                 Toast.makeText(this, "Memory cleared successfully", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Clear failed: " + clearStatus.toString(), Toast.LENGTH_SHORT).show();
-                return; // 초기화 실패 시 작업 종료
+                return; // 만약 초기화 실패 시 새 데이터 쓰기 작업 중지
             }
-
-            // Step 2: ASCII 데이터를 HEX로 변환
-            String hexString = asciiToHex(writeString);
+            String hexString = (asciiToHex(writeString));
             byte[] hexData = hexStringToByteArray(hexString);
-
-            // Step 3: 새로운 데이터 쓰기
-            writeParams.data = hexData; // 변환된 HEX 데이터를 WriteParams에 설정
+            writeParams.data = hexData;
             Status writeStatus = mRFIDReader.writeTag(filter, writeParams);
-
             if (writeStatus == Status.STATUS_OK) {
-                mNotification.startBuzzer(16, 100, 0, 1); // 성공 알림
+                mNotification.startBuzzer(16, 100, 0, 1);
                 Toast.makeText(this, "Success write: " + hexString, Toast.LENGTH_SHORT).show();
             } else {
-                mNotification.startBuzzer(1, 100, 100, 2); // 실패 알림
+                mNotification.startBuzzer(1, 100, 100, 2);
                 Toast.makeText(this, "Write failed: " + writeStatus.toString(), Toast.LENGTH_SHORT).show();
             }
 
+
         } catch (RuntimeException e) {
-            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         } finally {
             mRFIDReader.releaseRFIDReader();
             mNotification.releaseNotification();
@@ -213,7 +211,7 @@ public class PressMold extends AppCompatActivity {
             // EPC 메모리 뱅크 설정 및 오프셋 설정
             readParams.memoryBank = MemoryBank.EPC;
             readParams.offset = 2; // EPC 메모리의 데이터 부분부터 시작
-            readParams.size = 10;  // 읽기 크기 설정 (필요 시 조정)
+            readParams.size = 8;  // 읽기 크기 설정 (필요 시 조정)
             readParams.accessPassword = "00000000";
             readParams.timeout = 5000;
 

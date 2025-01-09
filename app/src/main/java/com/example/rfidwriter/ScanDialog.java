@@ -94,7 +94,7 @@ public class ScanDialog extends Activity {
         QTY.setText("");
         PLTBox.setText("");
         rfidResult.setText("");
-        button_write.setEnabled(false);
+        button_write.setVisibility(View.GONE);
         button_read.setOnClickListener(v -> RFID_Read());
         Intent rcvIntent = getIntent();
         QTYValue = rcvIntent.getStringExtra("QTYValue");
@@ -117,13 +117,22 @@ public class ScanDialog extends Activity {
         button_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();  // 현재 액티비티 종료하고 이전 액티비티로 돌아감
+                Intent LotNoIntent = new Intent(ScanDialog.this, LoadScan.class);
+
+// 조건에 따른 데이터 설정
+                if (ERRMSG.getText().toString().equals("MES LOT  and RFID Scan Completed")) {
+                    LotNoIntent.putExtra("SavedLotNo", "");
+                } else {
+                    LotNoIntent.putExtra("SavedLotNo", MESLOTValue);
+                }
+                LotNoIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); // 기존 액티비티 재사용
+                startActivity(LotNoIntent);
             }
         });
         button_write.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-                Intent write_intent = new Intent(ScanDialog.this, WriterfidActivity.class);
+                Intent write_intent = new Intent(ScanDialog.this, ListViewActivity.class);
                 startActivity(write_intent);
             }
         });
@@ -410,7 +419,7 @@ public class ScanDialog extends Activity {
                     }
                     else{
                         ERRMSG.setText(resultSet.getString("ERRMSG"));
-                        button_write.setEnabled(true);
+                        button_write.setVisibility(View.VISIBLE);
                     }
                 }
 

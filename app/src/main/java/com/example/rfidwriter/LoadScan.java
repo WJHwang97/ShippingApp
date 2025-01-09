@@ -69,6 +69,8 @@ public class LoadScan extends AppCompatActivity {
     private TextView LoadingMSG;
     private String EMPNO;
     private String DockMapValue;
+    private Button ReloadMES;
+    private String newSavedLotNo="";
 
 
     @Override
@@ -97,7 +99,16 @@ public class LoadScan extends AppCompatActivity {
         EMPNO =  rcvIntent.getStringExtra("EMPNO");
         DockMapValue = rcvIntent.getStringExtra("DockMapValue");
         String Name =  rcvIntent.getStringExtra("Name");
+
+        ReloadMES = findViewById(R.id.ReloadMES);
+        ReloadMES.setVisibility(View.GONE);
+        /*Intent LotNoIntent = getIntent();
+        String SavedLotNo = (LotNoIntent.getStringExtra("SavedLotNo"));
+        Toast.makeText(LoadScan.this, SavedLotNo, Toast.LENGTH_LONG).show();*/
         ShipDetails();
+
+
+
 
 
 
@@ -125,6 +136,9 @@ public class LoadScan extends AppCompatActivity {
                 ManualButton();
             }
         });
+
+
+
 
         vendorBox = findViewById(R.id.Vendor);
         vendorBox.requestFocus();
@@ -232,11 +246,35 @@ public class LoadScan extends AppCompatActivity {
             }
         });
     }
-
     protected void onResume() {
         super.onResume();
-        // 화면이 다시 나타나면 ShipDetails()를 호출하여 데이터를 갱신
         ShipDetails();
+    }
+
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        // 새로운 Intent가 전달되었을 때 처리
+        String newSavedLotNo = intent.getStringExtra("SavedLotNo");
+        CheckBox mesCheck = findViewById(R.id.MESCheck);
+        if (!Objects.equals(newSavedLotNo, "")) {
+            //Toast.makeText(this, "New Intent SavedLotNo: " + newSavedLotNo, Toast.LENGTH_LONG).show();
+            mesCheck.setChecked(true); // 체크박스 활성화
+            ReloadMES.setVisibility(View.VISIBLE);
+            // Intent 데이터 중복 처리 방지를 위해 Intent에서 데이터 제거
+            intent.removeExtra("SavedLotNo");
+        }
+        else{
+            mesCheck.setChecked(false);
+            ReloadMES.setVisibility(View.GONE);
+        }
+        ReloadMES.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReloadLot(newSavedLotNo);
+            }
+        });
     }
     private void SearchLot() {
         try {
@@ -246,6 +284,55 @@ public class LoadScan extends AppCompatActivity {
             callableStatement.setString(1, "SEARCH_LOT");
             callableStatement.setString(2, "6100");
             callableStatement.setString(3, barcode);
+            callableStatement.setString(4, RFIDYN);
+            callableStatement.setString(5, OrderNo);
+            callableStatement.setString(6, "Y");
+            callableStatement.setString(7, "");
+            callableStatement.setString(8, EMPNO);
+            callableStatement.setString(9, "");
+            ResultSet resultSet = callableStatement.executeQuery();
+
+            if (isThere(resultSet, "CHK")) {
+                chkexists = true;
+            }
+            else
+            {
+                chkexists = false;
+            }
+            if (resultSet.next()) {
+                if (!chkexists) {
+                    if(RFIDYN.equals("Y")) {
+                        Intent intent = new Intent(LoadScan.this, ScanDialog.class);
+                        intent.putExtra("QTYValue", resultSet.getString("QTY"));
+                        intent.putExtra("SABUNValue", resultSet.getString("SABUN"));
+                        intent.putExtra("SACHRKEYValue", resultSet.getString("SACHRKEY"));
+                        intent.putExtra("MESLOTValue", resultSet.getString("MESLOT"));
+                        intent.putExtra("TKNUM", ShippingNo.getText().toString());
+                        intent.putExtra("RFIDYN", RFIDYN);
+                        startActivity(intent);
+                        vendorBox.setText("");  // 입력 필드 초기화
+                    }} else {
+                    Toast.makeText(LoadScan.this, resultSet.getString("ERRMSG"), Toast.LENGTH_LONG).show();
+                    vendorBox.setText("");  // 오류 발생 시 필드 초기화
+                }
+            }
+            resultSet.close();
+            callableStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            vendorBox.setText("");  // 예외 발생 시 필드 초기화
+        }
+
+    }
+
+    private void ReloadLot(String ReloadLotNo) {
+        try {
+            // 데이터베이스 연결 및 CallableStatement 준비
+            CallableStatement callableStatement = con.prepareCall("{call sp_PdaA010FrmB_SARE_POP1(@WORKGB = ?, @FACTGB = ?, @LOTNO = ?, @RFIDYN = ?, @TKNUM = ?, @RTNYN = ?, @vcTRANGB = ?, @FUSER = ?, @FFORM = ?)}");
+            // 프로시저 파라미터 설정 및 실행 로직...
+            callableStatement.setString(1, "SEARCH_LOT");
+            callableStatement.setString(2, "6100");
+            callableStatement.setString(3, ReloadLotNo);
             callableStatement.setString(4, RFIDYN);
             callableStatement.setString(5, OrderNo);
             callableStatement.setString(6, "Y");
@@ -382,11 +469,12 @@ public class LoadScan extends AppCompatActivity {
                     if (currentResultSet.next()) {
                         RFIDYN = currentResultSet.getString("RFIDYN");
                         //Toast.makeText(LoadScan.this, "Selected EDI" + EDIYN, Toast.LENGTH_LONG).show();
-                        CheckBox MESCheckBox = findViewById(R.id.MESCheck);
-                        CheckBox RFIDCheckBox = findViewById(R.id.RFIDCheck);
+
+                        ReloadMES = findViewById(R.id.ReloadMES);
                         if (RFIDYN.equals("N")) {
+                            CheckBox MESCheckBox = findViewById(R.id.MESCheck);
                             MESCheckBox.setVisibility(View.GONE);
-                            RFIDCheckBox.setVisibility(View.GONE);
+                            ReloadMES.setVisibility(View.GONE);
                         }
                     }
                 }
@@ -415,9 +503,7 @@ public class LoadScan extends AppCompatActivity {
                                 Sachrkey = "";
                                 vendorBox.setText("");
                                 CheckBox MesCheck = findViewById(R.id.MESCheck);
-                                CheckBox RFIDCheck = findViewById(R.id.RFIDCheck);
-                                MesCheck.setChecked(false);
-                                RFIDCheck.setChecked(false);
+                                ReloadMES.setVisibility(View.GONE);
                                 TextView Vendor = findViewById(R.id.Vendor);
                                 Vendor.setText("");
                                 Toast.makeText(LoadScan.this, "Selected shipping doc. has been cancelled", Toast.LENGTH_LONG).show();
@@ -426,6 +512,7 @@ public class LoadScan extends AppCompatActivity {
                         }
                     }
                 }
+
 
             }
 
@@ -447,6 +534,7 @@ public class LoadScan extends AppCompatActivity {
                 throw new RuntimeException(e);
             }
         }
+
 
     }
     public void ManualButton()

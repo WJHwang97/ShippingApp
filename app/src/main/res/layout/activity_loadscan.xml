@@ -217,9 +217,9 @@
 
     <LinearLayout
         android:layout_width="430dp"
-        android:layout_height="194dp"
+        android:layout_height="220dp"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="-20dp"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -228,46 +228,54 @@
             android:layout_marginStart="15dp"
             android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/Vendor"
-                android:layout_width="240dp"
-                android:layout_height="35dp"
-                android:background="@drawable/text_view_border"
-                android:text=""
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:inputType="none"
-                android:imeOptions="actionSend"
-                android:textSize="18sp" />
+
 
             <LinearLayout
                 android:layout_width="232dp"
-                android:layout_height="45dp"
-                android:layout_marginTop="15dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="0dp"
                 android:orientation="horizontal">
 
                 <CheckBox
                     android:id="@+id/MESCheck"
                     android:layout_width="95dp"
                     android:layout_height="40dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="5dp"
                     android:text="MES"
                     android:textSize="20sp" />
+                <Button
+                    android:id="@+id/ReloadMES"
+                    android:layout_width="135dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="-5dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/rect_button_background"
+                    android:text="Reload MES"
+                    android:textSize="15sp" />
 
-                <CheckBox
-                    android:id="@+id/RFIDCheck"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="5dp"
-                    android:text="RFID"
-                    android:textSize="20sp" />
+
             </LinearLayout>
+
+            <EditText
+                android:id="@+id/Vendor"
+                android:layout_width="240dp"
+                android:layout_height="35dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/text_view_border"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:imeOptions="actionSend"
+                android:inputType="none"
+                android:text=""
+                android:textSize="18sp" />
 
             <Button
                 android:id="@+id/ClearScanButton"
                 android:layout_width="150dp"
                 android:layout_height="60dp"
                 android:layout_marginStart="30dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/rect_button_background"
                 android:text="Clear Scan"
                 android:textSize="18sp" />
@@ -292,10 +300,11 @@
                 android:id="@+id/ConfirmButton"
                 android:layout_width="140dp"
                 android:layout_height="60dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/rect_button_background"
                 android:text="Confirm"
                 android:textSize="18sp" />
+
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

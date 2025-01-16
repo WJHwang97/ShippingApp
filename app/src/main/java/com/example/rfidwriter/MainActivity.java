@@ -69,8 +69,10 @@ public class MainActivity extends AppCompatActivity {
 
         coursesGV = findViewById(R.id.idGVcourses);
         gridViewModelArrayList = new ArrayList<GridViewModel>();
+        GridViewAdapter adapter = new GridViewAdapter(this, gridViewModelArrayList, ID, NAME);
+        coursesGV.setAdapter(adapter);
         //오프라인 계정
-        if (EMPNo.equals("offline")) {
+        if (ID.equals("offline")) {
             gridViewModelArrayList.add(new GridViewModel("Write RFID", R.drawable.menu));
             gridViewModelArrayList.add(new GridViewModel("Read RFID", R.drawable.menu));
             gridViewModelArrayList.add(new GridViewModel("Change QTY", R.drawable.menu));
@@ -113,12 +115,5 @@ public class MainActivity extends AppCompatActivity {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-
-
-
-
-
         }
-        GridViewAdapter adapter = new GridViewAdapter(this, gridViewModelArrayList, ID, NAME);
-        coursesGV.setAdapter(adapter);
     }}

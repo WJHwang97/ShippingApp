@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,5 +36,17 @@ public class OrderDialog extends AppCompatActivity {
     private void button(){
         Intent intent = new Intent(getApplicationContext(), SalesLoadingScan.class);
         startActivity(intent);
+    }
+    @Override
+    public void onBackPressed() {
+        if (shouldAllowBackPress()) {
+            super.onBackPressed();
+        }
+    }
+    // 백버튼 동작 조건을 처리하는 메서드
+    private boolean shouldAllowBackPress() {
+        // 조건에 따라 true 또는 false 반환
+        // 예: 특정 상태에서만 뒤로가기 동작 허용
+        return false; // 기본적으로 true 설정
     }
 }

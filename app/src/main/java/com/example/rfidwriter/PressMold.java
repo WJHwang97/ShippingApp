@@ -184,10 +184,10 @@ public class PressMold extends AppCompatActivity {
             Status writeStatus = mRFIDReader.writeTag(filter, writeParams);
             if (writeStatus == Status.STATUS_OK) {
                 mNotification.startBuzzer(16, 100, 0, 1);
-                Toast.makeText(this, "Success write: " + hexString, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Success write", Toast.LENGTH_SHORT).show();
             } else {
                 mNotification.startBuzzer(1, 100, 100, 2);
-                Toast.makeText(this, "Write failed: " + writeStatus.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Write failed" + writeStatus.toString(), Toast.LENGTH_SHORT).show();
             }
 
 
@@ -228,7 +228,7 @@ public class PressMold extends AppCompatActivity {
                 mNotification.startBuzzer(16, 100, 0, 1);
             } else {
                 RFIDRead.setText("");
-                Toast.makeText(this, "RFID 읽기 실패: " + readResult.getStatus(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "RFID 읽기 실패", Toast.LENGTH_SHORT).show();
                 mNotification.startBuzzer(1, 100, 100, 2);
             }
         } catch (RuntimeException e) {

@@ -93,16 +93,10 @@ public class Login extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // 필요한 커스텀 동작 실행
-        Toast.makeText(this, "Back button pressed.", Toast.LENGTH_SHORT).show();
-
-        // 특정 조건에서만 super.onBackPressed 호출
-        // 예: 특정 상황에서는 기본 동작을 유지
         if (shouldAllowBackPress()) {
             super.onBackPressed();
         }
     }
-
     // 백버튼 동작 조건을 처리하는 메서드
     private boolean shouldAllowBackPress() {
         // 조건에 따라 true 또는 false 반환
@@ -116,6 +110,7 @@ public class Login extends AppCompatActivity {
             callableStatement.setString(1, "LOGIN");
             callableStatement.setString(2, ID);
             callableStatement.setString(3, md5Encrypt(PW));
+            //callableStatement.setString(3, (PW));
             ResultSet resultSet = callableStatement.executeQuery();
             if(resultSet.next()){
                 ResultSetMetaData metaData = resultSet.getMetaData();

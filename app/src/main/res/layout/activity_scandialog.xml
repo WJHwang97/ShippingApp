@@ -289,7 +289,6 @@
         android:layout_height="60dp"
         android:gravity="center"
         android:hint="ERRMSG"
-        android:textColor="#FF0000"
         android:textSize="20sp" />
 
     <LinearLayout

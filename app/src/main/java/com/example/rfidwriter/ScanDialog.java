@@ -1,5 +1,8 @@
 package com.example.rfidwriter;
 
+import static android.graphics.Color.GREEN;
+import static android.graphics.Color.RED;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -414,10 +417,12 @@ public class ScanDialog extends Activity {
                     if(!chkexists){
                         resultSet.close();
                         callableStatement.close();
+                        ERRMSG.setTextColor(GREEN);
                         ERRMSG.setText("MES LOT  and RFID Scan Completed");
                         //finish();
                     }
                     else{
+                        ERRMSG.setTextColor(RED);
                         ERRMSG.setText(resultSet.getString("ERRMSG"));
                         button_write.setVisibility(View.VISIBLE);
                     }

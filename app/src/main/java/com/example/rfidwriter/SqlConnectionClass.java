@@ -7,12 +7,22 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class SqlConnectionClass {
+    //운영 DB
     String classes = "net.sourceforge.jtds.jdbc.Driver";
     protected static    String ip = "10.250.200.10";
     protected static    String port = "1546";
-    protected static    String db = "MES_SWRE_BACKUP";
+    protected static    String db = "MES_SWRE";
     protected static    String un = "mesadmin";
     protected static    String password = "it85@sewon";
+
+/*
+    //테스트DB
+    String classes = "net.sourceforge.jtds.jdbc.Driver";
+    protected static    String ip = "10.250.200.10";
+    protected static    String port = "1546";
+    protected static    String db = "MES_SWRE_backup";
+    protected static    String un = "mesadmin";
+    protected static    String password = "it85@sewon";*/
 
     public Connection CONN() {
         StrictMode.ThreadPolicy policy = new  StrictMode.ThreadPolicy.Builder()

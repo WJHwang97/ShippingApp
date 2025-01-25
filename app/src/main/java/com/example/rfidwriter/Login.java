@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +34,7 @@ public class Login extends AppCompatActivity {
     Connection con;
     EditText User_ID, Password;
     Button loginbtn;
+    ImageButton refreshbtn;
     TextView StatusCHK;
     private String data;
     private String Name;
@@ -50,6 +52,7 @@ public class Login extends AppCompatActivity {
         Password = findViewById(R.id.Password);
         loginbtn = findViewById(R.id.loginbtn);
         StatusCHK = findViewById(R.id.StatusCheck);
+        refreshbtn = findViewById(R.id.RefreshButton);
 
         sqlConnectionClass = new SqlConnectionClass();
         try {
@@ -65,9 +68,14 @@ public class Login extends AppCompatActivity {
             StatusCHK.setText("OFFLINE");
             Toast.makeText(this, "Database connection failed.", Toast.LENGTH_LONG).show();
         }
-
-
-
+        refreshbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(Login.this, "Refreshed", Toast.LENGTH_LONG).show();
+                Intent First_Page = new Intent(Login.this, Login.class);
+                startActivity(First_Page);
+            }
+        });
         loginbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,7 +166,7 @@ public class Login extends AppCompatActivity {
         }
         else
         {
-            Toast.makeText(Login.this, "Please connect to Sewon Network", Toast.LENGTH_LONG).show();
+            Toast.makeText(Login.this, "Wrong ID/PW", Toast.LENGTH_LONG).show();
         }
     }
 

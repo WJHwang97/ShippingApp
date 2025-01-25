@@ -72,7 +72,6 @@ public class LoadScan extends AppCompatActivity {
     private Button ReloadMES;
     private String newSavedLotNo="";
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,10 +135,6 @@ public class LoadScan extends AppCompatActivity {
                 ManualButton();
             }
         });
-
-
-
-
         vendorBox = findViewById(R.id.Vendor);
         vendorBox.requestFocus();
         ClearScan = findViewById(R.id.ClearScanButton);
@@ -158,11 +153,6 @@ public class LoadScan extends AppCompatActivity {
                 //Toast.makeText(getApplicationContext(), "Confirm", Toast.LENGTH_LONG).show();
             }
         });
-
-
-
-
-
 // 키보드를 무조건 숨기도록 설정
         vendorBox.setShowSoftInputOnFocus(false); // 키보드가 뜨지 않도록 설정 (API 21 이상에서 지원)
 
@@ -185,8 +175,6 @@ public class LoadScan extends AppCompatActivity {
                 return true;
             }
         });
-
-
         vendorBox.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -222,26 +210,31 @@ public class LoadScan extends AppCompatActivity {
 
 
 // 바코드 처리 메소드
-
-
-
-
-
         ScanDetails = findViewById(R.id.ScanDetailButton);
         ScanDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(Sachrkey.equals("")){
-                    Toast.makeText(getApplicationContext(), "Select Item to check", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    String LotNo = vendorBox.getText().toString();
-                    Intent intent = new Intent(getApplicationContext(), ScanDetails.class);
-                    intent.putExtra("TKNUM", OrderNo);
-                    intent.putExtra("SACHRKEY", Sachrkey);
-                    intent.putExtra("LOTNO", vendorBox.toString());
-                    intent.putExtra("EMPNO", EMPNO);
-                    startActivity(intent);
+                sqlConnectionClass = new SqlConnectionClass();
+                try{
+                Connection con = sqlConnectionClass.CONN();
+                if(con != null) {
+                    if (Sachrkey.equals("")) {
+                        Toast.makeText(getApplicationContext(), "Select Item to check", Toast.LENGTH_SHORT).show();
+                    } else {
+                        String LotNo = vendorBox.getText().toString();
+                        Intent intent = new Intent(getApplicationContext(), ScanDetails.class);
+                        intent.putExtra("TKNUM", OrderNo);
+                        intent.putExtra("SACHRKEY", Sachrkey);
+                        intent.putExtra("LOTNO", vendorBox.toString());
+                        intent.putExtra("EMPNO", EMPNO);
+                        startActivity(intent);
+                    }
+                }} catch(Exception e){
+                    e.printStackTrace();
+                    //con = null;
+                    Toast.makeText(LoadScan.this, "Internet Connection Failed" , Toast.LENGTH_LONG).show();
+                    Intent First_Page = new Intent(LoadScan.this, Login.class);
+                    startActivity(First_Page);
                 }
             }
         });
@@ -319,8 +312,9 @@ public class LoadScan extends AppCompatActivity {
             resultSet.close();
             callableStatement.close();
         } catch (SQLException e) {
-            e.printStackTrace();
-            vendorBox.setText("");  // 예외 발생 시 필드 초기화
+            Toast.makeText(this, "Internet Connection Failed" , Toast.LENGTH_LONG).show();
+            Intent First_Page = new Intent(this, Login.class);
+            startActivity(First_Page);
         }
 
     }
@@ -369,7 +363,7 @@ public class LoadScan extends AppCompatActivity {
             callableStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
-            vendorBox.setText("");  // 예외 발생 시 필드 초기화
+            Toast.makeText(this, "Error fetching data: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
     }
@@ -402,8 +396,9 @@ public class LoadScan extends AppCompatActivity {
             resultSet.close();
             callableStatement.close();
         } catch (SQLException e) {
-            e.printStackTrace();
-            vendorBox.setText("");  // 예외 발생 시 필드 초기화
+            Toast.makeText(this, "Internet Connection Failed" , Toast.LENGTH_LONG).show();
+            Intent First_Page = new Intent(this, Login.class);
+            startActivity(First_Page);
         }
         runOnUiThread(new Runnable() {
             @Override
@@ -519,8 +514,9 @@ public class LoadScan extends AppCompatActivity {
             // 마지막 ResultSet 처리 (CANCELYN 값 가져오기)
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            Toast.makeText(LoadScan.this, "SQL Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Internet Connection Failed" , Toast.LENGTH_LONG).show();
+            Intent First_Page = new Intent(this, Login.class);
+            startActivity(First_Page);
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(LoadScan.this, "General Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -569,10 +565,9 @@ public class LoadScan extends AppCompatActivity {
             callableStatement.close();
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            vendorBox.setText("");
-            Sachrkey = "";
-            ShipDetails();
+            Toast.makeText(this, "Internet Connection Failed" , Toast.LENGTH_LONG).show();
+            Intent First_Page = new Intent(this, Login.class);
+            startActivity(First_Page);
         }
     }
 
@@ -616,10 +611,9 @@ public class LoadScan extends AppCompatActivity {
             callableStatement.close();
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            vendorBox.setText("");
-            Sachrkey = "";
-            ShipDetails();
+            Toast.makeText(this, "Internet Connection Failed" , Toast.LENGTH_LONG).show();
+            Intent First_Page = new Intent(this, Login.class);
+            startActivity(First_Page);
         }
     }
 

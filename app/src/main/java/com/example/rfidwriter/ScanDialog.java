@@ -430,8 +430,9 @@ public class ScanDialog extends Activity {
 
 
             } catch (SQLException e) {
-                e.printStackTrace();
-                Toast.makeText(ScanDialog.this, "Error fetching data: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Internet Connection Failed" , Toast.LENGTH_LONG).show();
+                Intent First_Page = new Intent(this, Login.class);
+                startActivity(First_Page);
             }
         } catch (RuntimeException e) {
             // 에러 발생 시 Toast 메시지 표시

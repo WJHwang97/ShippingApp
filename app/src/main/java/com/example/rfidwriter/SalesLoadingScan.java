@@ -190,8 +190,9 @@ public class SalesLoadingScan extends AppCompatActivity {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            Toast.makeText(SalesLoadingScan.this, "Error fetching data: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Internet Connection Failed" , Toast.LENGTH_LONG).show();
+            Intent First_Page = new Intent(this, Login.class);
+            startActivity(First_Page);
         }
     }
 

@@ -129,8 +129,9 @@ public class ScanDetails extends AppCompatActivity {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            Toast.makeText(ScanDetails.this, "Error fetching data: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Internet Connection Failed" , Toast.LENGTH_LONG).show();
+            Intent First_Page = new Intent(this, Login.class);
+            startActivity(First_Page);
         }
     }
 
@@ -161,20 +162,26 @@ public class ScanDetails extends AppCompatActivity {
         sqlConnectionClass = new SqlConnectionClass();
         con = sqlConnectionClass.CONN();
         try {
-            CallableStatement callableStatement = con.prepareCall("{call sp_PdaA010FrmB(@WORKGB=?, @SACHRKEY=?, @LOTNO=?, @RTNYN=?, @vcTRANGB=?, @FUSER=?, @FFORM=?)}");
-            callableStatement.setString(1, "SCAN_DELETE");
-            callableStatement.setString(2, Sachrkey);
-            callableStatement.setString(3, LOTNO);
-            callableStatement.setString(4, "N");
-            callableStatement.setString(5, "0");
-            callableStatement.setString(6, EMPNO);
-            callableStatement.setString(7, "");
-            callableStatement.executeQuery();
+                    CallableStatement callableStatement = con.prepareCall("{call sp_PdaA010FrmB(@WORKGB=?, @SACHRKEY=?, @LOTNO=?, @RTNYN=?, @vcTRANGB=?, @FUSER=?, @FFORM=?)}");
+                    callableStatement.setString(1, "SCAN_DELETE");
+                    callableStatement.setString(2, Sachrkey);
+                    callableStatement.setString(3, LOTNO);
+                    callableStatement.setString(4, "Y");
+                    callableStatement.setString(5, "0");
+                    callableStatement.setString(6, EMPNO);
+                    callableStatement.setString(7, "");
+                    callableStatement.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
-            //Toast.makeText(ScanDetails.this, "Error fetching data: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(ScanDetails.this, "Select Load to delete", Toast.LENGTH_LONG).show();
         }
+
+
+
+
+
         runOnUiThread(new Runnable() {
+
             @Override
             public void run() {
                 LoadTable();

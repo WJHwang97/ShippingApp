@@ -45,12 +45,25 @@
         android:id="@+id/StatusCheck"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="40dp"
-        android:layout_marginBottom="680dp"
+        android:layout_marginEnd="88dp"
+        android:layout_marginBottom="676dp"
         android:text="STATUS"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageButton
+        android:id="@+id/RefreshButton"
+        android:layout_width="38dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="52dp"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintStart_toEndOf="@+id/StatusCheck"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/refresh" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

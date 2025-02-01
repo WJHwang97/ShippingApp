@@ -16,7 +16,7 @@ public class SqlConnectionClass {
     protected static    String un = "mesadmin";
     protected static    String password = "it85@sewon";
 
-/*    //테스트DB
+    /*//테스트DB
     String classes = "net.sourceforge.jtds.jdbc.Driver";
     protected static    String ip = "10.250.200.10";
     protected static    String port = "1546";

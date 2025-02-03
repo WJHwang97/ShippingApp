@@ -129,8 +129,8 @@ public class Login extends AppCompatActivity {
             CallableStatement callableStatement = con.prepareCall("{call PDA_LOGIN(@WORKGB=?, @USERID=?, @PASSWD=?)}");
             callableStatement.setString(1, "LOGIN");
             callableStatement.setString(2, ID);
-            callableStatement.setString(3, md5Encrypt(PW));
-            //callableStatement.setString(3, (PW));
+            //callableStatement.setString(3, md5Encrypt(PW));
+            callableStatement.setString(3, (PW));
             ResultSet resultSet = callableStatement.executeQuery();
             if(resultSet.next()){
                 ResultSetMetaData metaData = resultSet.getMetaData();

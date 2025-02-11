@@ -68,6 +68,7 @@ public class LoadScan extends AppCompatActivity {
     private boolean chkexists;
     private TextView LoadingMSG;
     private String EMPNO;
+    private String Name;
     private String DockMapValue;
     private Button ReloadMES;
     private String newSavedLotNo="";
@@ -97,7 +98,7 @@ public class LoadScan extends AppCompatActivity {
         TruckNo.setText(rcvIntent.getStringExtra("TrailerNO"));
         EMPNO =  rcvIntent.getStringExtra("EMPNO");
         DockMapValue = rcvIntent.getStringExtra("DockMapValue");
-        String Name =  rcvIntent.getStringExtra("Name");
+        Name =  rcvIntent.getStringExtra("Name");
 
         ReloadMES = findViewById(R.id.ReloadMES);
         ReloadMES.setVisibility(View.GONE);
@@ -629,6 +630,8 @@ public class LoadScan extends AppCompatActivity {
                             LoadingMSG.setText("Loading Completed");
                             LoadingMSG.setTextColor(Color.GREEN);
                             Intent intent = new Intent(getApplicationContext(), OrderDialog.class);
+                            intent.putExtra("Name",Name);
+                            intent.putExtra("EMPNO", EMPNO);
                             startActivity(intent);
                             ShipDetails();
                         } catch (SQLException e) {

@@ -16,6 +16,8 @@ import androidx.core.view.WindowInsetsCompat;
 public class OrderDialog extends AppCompatActivity {
 
     private Button returnbutton;
+    private String EMPNO;
+    private String Name;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -31,10 +33,15 @@ public class OrderDialog extends AppCompatActivity {
                 button();  // 현재 액티비티 종료하고 이전 액티비티로 돌아감
             }
         });
+        Intent rcvIntent = getIntent();
+        EMPNO =  rcvIntent.getStringExtra("EMPNO");
+        Name =  rcvIntent.getStringExtra("Name");
     }
 
     private void button(){
         Intent intent = new Intent(getApplicationContext(), SalesLoadingScan.class);
+        intent.putExtra("EMPNO", EMPNO);
+        intent.putExtra("Name", Name);
         startActivity(intent);
     }
     @Override

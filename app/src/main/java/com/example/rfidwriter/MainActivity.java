@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                         gridViewModelArrayList.add(new GridViewModel("Mold Read", R.drawable.menu));
                     }
                     //영업 계정
-                    else if(workBan.equals("gu080")){
+                    else if(workBan.equals("gu080") || workBan.equals("gu085")){
                         gridViewModelArrayList.add(new GridViewModel("Write RFID", R.drawable.menu));
                         gridViewModelArrayList.add(new GridViewModel("Read RFID", R.drawable.menu));
                         gridViewModelArrayList.add(new GridViewModel("Sales Loading Scan", R.drawable.menu));

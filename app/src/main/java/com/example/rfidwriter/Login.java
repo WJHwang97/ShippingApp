@@ -51,7 +51,7 @@ public class Login extends AppCompatActivity {
     private String data;
     private String Name;
     private int columncount;
-    private String updateUrl = "http://10.250.195.6/shipment/version.json";
+    private String updateUrl = "http://10.250.195.6/SARE/shipment/version.json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
